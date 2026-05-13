@@ -1,0 +1,152 @@
+Component
+
+- = component
+
+- Top Nav Bar
+-- User Current Location
+-- User Profile Icon
+
+- Bottom Nav Bar
+-- Home Icon
+-- Explore (Share Good List) Icon
+-- Add Good Icon
+-- My Good List Icon
+-- Chat Icon
+
+Page
+
+- = page
+
+- Register
+
+- Login
+
+- Forget Password
+
+- Reset Password
+
+- Home
+-- Top Nav Bar
+-- Banner Images
+-- Shared Goods Section (with See All Button)
+-- Our Partner Slider Section
+--- Partner Cards Section
+---- Partner Avatar
+---- Partner Name
+-- Bottom Nav Bar
+
+- Our Partner List
+-- Partner Cards Section
+--- Partner Name
+--- Partner Description
+
+- Explore (Shared Good List)
+-- Filter Section (Near you, Radius Adjustment, etc.)
+-- List View Section
+-- Map View Section
+-- Bottom Nav Bar
+
+- Add Good
+-- Good Card Section
+--- Good Picture Form
+--- Good Name Form
+--- Good Category Form
+--- Good Datetime Expiry Form
+--- Location Form
+--- Message for Picker Form
+--- Publish Good Button
+-- Bottom Nav Bar
+
+- My Good List
+-- My Shared Good List Section
+--- Good Picture
+--- Good Name
+--- Good Category
+--- Good Datetime Expiry
+-- My Taken Good List Section
+--- Good Picture
+--- Good Name
+--- Good Category
+--- Good Datetime Expiry
+-- Bottom Nav Bar
+
+- Good Detail (My Shared Good Detail, Shared Good Detail, My Taken Good Detail)
+-- Good Card
+--- Good Picture
+--- Good Name
+--- Good Category
+--- Good Datetime Expiry
+-- Good Pick Location
+-- Good Message for Picker
+-- Good Message for Provider
+-- Request List (for My Shared Good Detail)
+-- Datetime Taken (for My Shared Good Detail and My Taken Good Detail)
+-- Cancel Publication / Request for Pick / Cancel Request for Pick / Review / See Review Button
+
+- Review Taken Good
+-- Good Card
+--- Good Picture
+--- Good Name
+-- Stars/Rate Section
+-- Message/Comment Section
+-- Send Review Button
+
+- Taken Good Review
+-- Good Card
+--- Good Picture
+--- Good Name
+-- Stars/Rate Section
+-- Message/Comment Section
+
+- Chat List 
+-- Other User Cards Section
+--- User Avatar
+--- User Name
+--- Current Chat Body
+--- Current Chat Datetime Sent
+-- Bottom Nav Bar
+
+- Chat Detail
+-- Back button
+-- User Avater
+-- User Name
+-- Chat messages section
+--- Message Text
+--- Message Datetime Sent
+-- Input Message section
+--- Message Text Input Form
+--- Send Message Button
+
+- Account
+-- Profile Card Section
+--- Profile Avatar
+--- Profile Name
+--- Profile Phone Number
+--- Profile Email
+--- Edit Profile Button
+-- Menu Section
+--- My Good List
+--- Chat List
+--- Settings
+--- Redeem List
+--- Privacy Policy
+--- Terms of Use
+--- Logout
+
+- Edit Profile
+-- Profile Avatar (with Edit Button)
+-- Profile Name Form
+-- Profile Phone Number Form
+-- Profile Email Form
+-- Save Button
+
+- Redeem List
+-- Item Redeem Card
+--- Item Redeem Icon
+--- Item Redeem Name
+--- Redeem Button
+
+- Settings
+- Language
+- Privacy Policy
+- Terms of Use
