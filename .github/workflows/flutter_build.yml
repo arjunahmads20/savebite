@@ -1,0 +1,52 @@
+name: Flutter Build
+
+# This workflow triggers on every push to the 'main' branch
+on:
+  push:
+    branches:
+      - master
+  # Also allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: 
+
+jobs:
+  build:
+    # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Java (required for Android builds)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17' # Java 17 is recommended for newer Android Gradle plugins
+
+      # 3. Set up the Flutter environment
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # Uses the stable channel of Flutter
+          # flutter-version: '3.24.0' # Optional: Pin a specific Flutter version if needed
+
+      # 4. Install dependencies
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Create splash screen
+        run: flutter pub run flutter_native_splash:create
+
+      # 5. Build the Android APK
+      - name: Build APK
+        run: flutter build apk --release
+
+      # 6. Upload the generated APK as an artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7 # Keeps the file available for download for 7 days
