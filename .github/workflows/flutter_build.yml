@@ -36,8 +36,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create splash screen
-        run: flutter pub run flutter_native_splash:create
 
       # 5. Build the Android APK
       - name: Build APK
