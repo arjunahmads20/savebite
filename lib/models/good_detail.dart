@@ -10,7 +10,10 @@ class GoodDetail {
   final String pictureUrl;
   final DateTime? datetimeExpiry;
   final String status;
-  final double goodPrice;
+  final double actualPrice;
+  final double discountedPrice;
+  final bool ownerIsBusiness;
+  final String? ownerBusinessName;
   final String? pickLocation;
   final String? messageForPicker;
 
@@ -22,10 +25,16 @@ class GoodDetail {
     required this.pictureUrl,
     this.datetimeExpiry,
     required this.status,
-    required this.goodPrice,
+    required this.actualPrice,
+    required this.discountedPrice,
+    this.ownerIsBusiness = false,
+    this.ownerBusinessName,
     this.pickLocation,
     this.messageForPicker,
   });
+
+  /// Convenience: is this good free to take?
+  bool get isFree => discountedPrice == 0;
 
   factory GoodDetail.fromJson(Map<String, dynamic> json) {
     String picture =
@@ -48,8 +57,12 @@ class GoodDetail {
           ? DateTime.tryParse(json['datetime_expiry'] as String)
           : null,
       status: json['status'] as String? ?? 'Available',
-      goodPrice:
-          double.tryParse(json['good_price']?.toString() ?? '0') ?? 0.0,
+      actualPrice:
+          double.tryParse(json['actual_price']?.toString() ?? '0') ?? 0.0,
+      discountedPrice:
+          double.tryParse(json['discounted_price']?.toString() ?? '0') ?? 0.0,
+      ownerIsBusiness: json['owner_is_business'] as bool? ?? false,
+      ownerBusinessName: json['owner_business_name'] as String?,
       pickLocation: json['pick_location'] as String?,
       messageForPicker: json['message_for_picker'] as String?,
     );
@@ -64,7 +77,10 @@ class GoodDetail {
         pictureUrl: pictureUrl,
         datetimeExpiry: datetimeExpiry ?? DateTime.now().add(const Duration(days: 1)),
         status: status,
-        goodPrice: goodPrice,
+        actualPrice: actualPrice,
+        discountedPrice: discountedPrice,
+        ownerIsBusiness: ownerIsBusiness,
+        ownerBusinessName: ownerBusinessName,
       );
 }
 

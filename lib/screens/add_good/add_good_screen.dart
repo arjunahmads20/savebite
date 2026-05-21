@@ -26,7 +26,8 @@ class _AddGoodScreenState extends State<AddGoodScreen> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _messageController = TextEditingController();
-  final _priceController = TextEditingController(text: '0');
+  final _actualPriceController = TextEditingController(text: '0');
+  final _discountedPriceController = TextEditingController(text: '0');
 
   // State
   List<GoodCategory> _categories = [];
@@ -48,7 +49,8 @@ class _AddGoodScreenState extends State<AddGoodScreen> {
     _nameController.dispose();
     _locationController.dispose();
     _messageController.dispose();
-    _priceController.dispose();
+    _actualPriceController.dispose();
+    _discountedPriceController.dispose();
     super.dispose();
   }
 
@@ -151,7 +153,8 @@ class _AddGoodScreenState extends State<AddGoodScreen> {
       datetimeExpiry: _selectedExpiry!,
       pickLocation: _locationController.text.trim(),
       messageForPicker: _messageController.text.trim(),
-      goodPrice: double.tryParse(_priceController.text) ?? 0.0,
+      actualPrice: double.tryParse(_actualPriceController.text) ?? 0.0,
+      discountedPrice: double.tryParse(_discountedPriceController.text) ?? 0.0,
     );
 
     if (!mounted) return;
@@ -182,7 +185,8 @@ class _AddGoodScreenState extends State<AddGoodScreen> {
       _selectedExpiry = null;
       _selectedImageBytes = null;
       _selectedImageName = '';
-      _priceController.text = '0';
+      _actualPriceController.text = '0';
+      _discountedPriceController.text = '0';
       _locationController.clear();
       _messageController.clear();
     });
@@ -410,15 +414,33 @@ class _AddGoodScreenState extends State<AddGoodScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // ── Price ──────────────────────────────────────────
-                      _buildLabel('price_free'.tr()),
+                      // ── Actual Price ───────────────────────────────────
+                      _buildLabel('actual_price'.tr()),
                       const SizedBox(height: 8),
                       TextFormField(
-                        controller: _priceController,
+                        controller: _actualPriceController,
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         decoration: _dec(
                           hint: '0',
-                          icon: Icons.attach_money_outlined,
+                          icon: Icons.sell_outlined,
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return null;
+                          if (double.tryParse(v) == null) return 'enter_valid_number'.tr();
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      // ── Discounted Price ────────────────────────────────
+                      _buildLabel('discounted_price'.tr()),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        controller: _discountedPriceController,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        decoration: _dec(
+                          hint: '0  (0 = Free)',
+                          icon: Icons.local_offer_outlined,
                         ),
                         validator: (v) {
                           if (v == null || v.isEmpty) return null;

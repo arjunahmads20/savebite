@@ -120,7 +120,8 @@ class ApiService {
     required DateTime datetimeExpiry,
     required String pickLocation,
     String? messageForPicker,
-    double goodPrice = 0.0,
+    double actualPrice = 0.0,
+    double discountedPrice = 0.0,
     int goodQuantity = 1,
   }) async {
     try {
@@ -138,7 +139,8 @@ class ApiService {
           'datetime_expiry': datetimeExpiry.toIso8601String(),
           'pick_location': pickLocation,
           'message_for_picker': messageForPicker ?? '',
-          'good_price': goodPrice,
+          'actual_price': actualPrice,
+          'discounted_price': discountedPrice,
           'good_quantity': goodQuantity,
           'status': 'Available',
         }),

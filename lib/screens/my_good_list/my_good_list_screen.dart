@@ -311,29 +311,28 @@ class _GoodCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            // Picture
-            ClipRRect(
-              borderRadius: const BorderRadius.horizontal(left: Radius.circular(14)),
-              child: Image.network(
-                good.pictureUrl,
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  width: 100,
-                  height: 100,
-                  color: Colors.grey.shade200,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Picture
+              ClipRRect(
+                borderRadius: const BorderRadius.horizontal(left: Radius.circular(14)),
+                child: Image.network(
+                  good.pictureUrl,
+                  width: 120,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(
+                    width: 120,
+                    color: Colors.grey.shade200,
                   child: const Icon(Icons.image, color: Colors.grey),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
             // Details
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+                padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -388,15 +387,57 @@ class _GoodCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    // Category
+                    // Category + business badge
                     Row(
                       children: [
                         const Icon(Icons.category_outlined,
                             size: 13, color: AppTheme.textSecondary),
                         const SizedBox(width: 4),
-                        Text(good.goodCategoryName,
+                        Flexible(
+                          child: Text(
+                            good.goodCategoryName,
                             style: const TextStyle(
-                                fontSize: 12, color: AppTheme.textSecondary)),
+                                fontSize: 12, color: AppTheme.textSecondary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (good.ownerIsBusiness)
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 6),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF6F00)
+                                    .withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                    color: const Color(0xFFFF6F00)
+                                        .withValues(alpha: 0.4)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.storefront_outlined,
+                                      size: 10, color: Color(0xFFFF6F00)),
+                                  const SizedBox(width: 3),
+                                  Flexible(
+                                    child: Text(
+                                      good.ownerBusinessName ?? 'Toko / Warung',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFFFF6F00),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     const SizedBox(height: 4),
@@ -421,6 +462,78 @@ class _GoodCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 6),
+                    // Price
+                    if (good.isFree)
+                      Row(
+                        children: [
+                          const Icon(Icons.volunteer_activism,
+                              size: 12, color: AppTheme.primaryGreen),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'Free',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryGreen,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Builder(builder: (context) {
+                        final pct = good.actualPrice > 0
+                            ? ((good.actualPrice - good.discountedPrice) /
+                                    good.actualPrice *
+                                    100)
+                                .round()
+                            : 0;
+                        return Row(
+                          children: [
+                            const Icon(Icons.local_offer_outlined,
+                                size: 12, color: AppTheme.primaryGreen),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Rp ${good.discountedPrice.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.primaryGreen,
+                              ),
+                            ),
+                            if (good.actualPrice > good.discountedPrice) ...[
+                              const SizedBox(width: 6),
+                              Text(
+                                'Rp ${good.actualPrice.toStringAsFixed(0)}',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppTheme.textSecondary,
+                                  decoration: TextDecoration.lineThrough,
+                                ),
+                              ),
+                              if (pct > 0) ...[
+                                const SizedBox(width: 5),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade600,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    '-$pct%',
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ],
+                        );
+                      }),
                   ],
                 ),
               ),
@@ -431,6 +544,7 @@ class _GoodCard extends StatelessWidget {
               child: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
             ),
           ],
+        ),
         ),
       ),
     );

@@ -262,7 +262,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   pictureUrl: good.pictureUrl,
                   datetimeExpiry: good.datetimeExpiry,
                   status: good.status,
-                  goodPrice: good.goodPrice,
+                  actualPrice: good.actualPrice,
+                  discountedPrice: good.discountedPrice,
+                  ownerIsBusiness: good.ownerIsBusiness,
+                  ownerBusinessName: good.ownerBusinessName,
                 );
                 if (context.mounted) {
                   Navigator.push(
@@ -294,21 +297,21 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                    child: Image.network(
-                      good.pictureUrl,
-                      height: 120,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 120,
-                          width: double.infinity,
-                          color: Colors.grey[200],
-                          child: const Icon(Icons.image_not_supported, color: Colors.grey),
-                        );
-                      },
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.network(
+                        good.pictureUrl,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: double.infinity,
+                            color: Colors.grey[200],
+                            child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   Padding(
@@ -316,43 +319,95 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // Good name
                         Text(
                           good.goodName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: 13,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
-                        Text(
-                          good.goodCategory,
-                          style: const TextStyle(
-                            color: AppTheme.textSecondary,
-                            fontSize: 12,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
+                        // Category + business badge row
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AppTheme.primaryYellow.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                            Flexible(
                               child: Text(
-                                good.goodPrice == 0 ? 'Free' : 'Rp ${good.goodPrice.toStringAsFixed(0)}',
+                                good.goodCategory,
                                 style: const TextStyle(
-                                  color: AppTheme.primaryYellow,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
+                                  color: AppTheme.textSecondary,
+                                  fontSize: 11,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
+                            if (good.ownerIsBusiness)
+                              Flexible(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFFF6F00)
+                                        .withValues(alpha: 0.12),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                        color: const Color(0xFFFF6F00)
+                                            .withValues(alpha: 0.4)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.storefront_outlined,
+                                          size: 10,
+                                          color: Color(0xFFFF6F00)),
+                                      const SizedBox(width: 3),
+                                      Flexible(
+                                        child: Text(
+                                          good.ownerBusinessName ?? 'Toko / Warung',
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFFFF6F00),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
+                        const SizedBox(height: 6),
+                        // Price row
+                        if (good.isFree)
+                          _buildSmallPriceBadge(
+                              label: 'Free', color: AppTheme.primaryGreen)
+                        else
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSmallPriceBadge(
+                                label:
+                                    'Rp ${good.discountedPrice.toStringAsFixed(0)}',
+                                color: AppTheme.primaryGreen,
+                              ),
+                              if (good.actualPrice > good.discountedPrice)
+                                Text(
+                                  'Rp ${good.actualPrice.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    color: AppTheme.textSecondary,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -364,6 +419,25 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _buildSmallPriceBadge({required String label, required Color color}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.bold,
+          fontSize: 11,
+        ),
+      ),
+    );
+  }
+
 
   Widget _buildPartnerSection() {
     if (_isLoadingPartners) {

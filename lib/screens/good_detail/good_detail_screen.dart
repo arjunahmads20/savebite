@@ -267,6 +267,99 @@ class _GoodDetailScreenState extends State<GoodDetailScreen> {
     }
   }
 
+  /// Free badge — shown when discountedPrice == 0
+  Widget _buildPriceBadgeFree() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryGreen.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(Icons.volunteer_activism, size: 14, color: AppTheme.primaryGreen),
+          SizedBox(width: 6),
+          Text(
+            'Free',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primaryGreen,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Paid badge — shows actual (struck-through), discounted price, and % off pill
+  Widget _buildPriceBadgePaid({required double actual, required double discounted}) {
+    String fmt(double v) =>
+        'Rp ${v.toStringAsFixed(0).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+$)'), (m) => '${m[1]}.')}';
+    final int pct = actual > 0
+        ? ((actual - discounted) / actual * 100).round()
+        : 0;
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryGreen.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.4)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.local_offer_outlined,
+                  size: 14, color: AppTheme.primaryGreen),
+              const SizedBox(width: 6),
+              Text(
+                fmt(discounted),
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.primaryGreen,
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (actual > discounted) ...[
+          const SizedBox(width: 8),
+          Text(
+            fmt(actual),
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppTheme.textSecondary,
+              decoration: TextDecoration.lineThrough,
+            ),
+          ),
+          if (pct > 0) ...[
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+              decoration: BoxDecoration(
+                color: Colors.red.shade600,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '-$pct%',
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ],
+    );
+  }
+
   // ── Build ────────────────────────────────────────────────────────────
 
   @override
@@ -345,11 +438,52 @@ class _GoodDetailScreenState extends State<GoodDetailScreen> {
                           ? Colors.red
                           : null,
                     ),
-                    if (widget.good.goodPrice > 0) ...[
-                      const SizedBox(height: 4),
-                      _infoRow(Icons.attach_money_outlined, 'Price',
-                          'Rp ${widget.good.goodPrice.toStringAsFixed(0)}'),
+                    if (widget.good.ownerIsBusiness) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF6F00).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: const Color(0xFFFF6F00).withValues(alpha: 0.4)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.storefront_outlined,
+                                    size: 13, color: Color(0xFFFF6F00)),
+                                const SizedBox(width: 4),
+                                Flexible(
+                                  child: Text(
+                                    widget.good.ownerBusinessName ?? 'Toko / Warung',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFFFF6F00),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
+                    const SizedBox(height: 8),
+                    // ── Price row ────────────────────────────────────
+                    if (widget.good.isFree)
+                      _buildPriceBadgeFree()
+                    else
+                      _buildPriceBadgePaid(
+                        actual: widget.good.actualPrice,
+                        discounted: widget.good.discountedPrice,
+                      ),
                   ]),
                   const SizedBox(height: 14),
 

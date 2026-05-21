@@ -238,7 +238,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 pictureUrl: good.pictureUrl,
                 datetimeExpiry: good.datetimeExpiry,
                 status: good.status,
-                goodPrice: good.goodPrice,
+                actualPrice: good.actualPrice,
+                discountedPrice: good.discountedPrice,
+                ownerIsBusiness: good.ownerIsBusiness,
               );
               if (context.mounted) {
                 Navigator.push(
@@ -266,44 +268,154 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
               ],
             ),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
-                  child: Image.network(
-                    good.pictureUrl,
-                    height: 100,
-                    width: 100,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      height: 100, width: 100, color: Colors.grey[200],
-                      child: const Icon(Icons.image_not_supported),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
+                    child: Image.network(
+                      good.pictureUrl,
+                      width: 100,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 100, color: Colors.grey[200],
+                        child: const Icon(Icons.image_not_supported),
+                      ),
                     ),
                   ),
-                ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(good.goodName,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        const SizedBox(height: 4),
-                        Text(good.goodCategory,
-                            style: const TextStyle(color: AppTheme.textSecondary)),
-                        const SizedBox(height: 8),
-                        Text(
-                          good.goodPrice == 0
-                              ? 'Free'
-                              : 'Rp ${good.goodPrice.toStringAsFixed(0)}',
-                          style: const TextStyle(
-                              color: AppTheme.primaryYellow, fontWeight: FontWeight.bold),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12.0, top: 12.0, bottom: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Name
+                            Text(good.goodName,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            const SizedBox(height: 4),
+                            // Category + business badge
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    good.goodCategory,
+                                    style: const TextStyle(
+                                        color: AppTheme.textSecondary,
+                                        fontSize: 13),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                if (good.ownerIsBusiness)
+                                  Flexible(
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF6F00)
+                                            .withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(
+                                            color: const Color(0xFFFF6F00)
+                                                .withValues(alpha: 0.4)),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(Icons.storefront_outlined,
+                                              size: 10,
+                                              color: Color(0xFFFF6F00)),
+                                          const SizedBox(width: 3),
+                                          Flexible(
+                                            child: Text(
+                                              good.ownerBusinessName ?? 'Toko / Warung',
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFFFF6F00),
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            // Price
+                            if (good.isFree)
+                              const Text(
+                                'Free',
+                                style: TextStyle(
+                                    color: AppTheme.primaryGreen,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            else
+                              Builder(builder: (context) {
+                                final pct = good.actualPrice > 0
+                                    ? ((good.actualPrice - good.discountedPrice) /
+                                            good.actualPrice *
+                                            100)
+                                        .round()
+                                    : 0;
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Rp ${good.discountedPrice.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                          color: AppTheme.primaryGreen,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    if (good.actualPrice > good.discountedPrice)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Rp ${good.actualPrice.toStringAsFixed(0)}',
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: AppTheme.textSecondary,
+                                              decoration:
+                                                  TextDecoration.lineThrough,
+                                            ),
+                                          ),
+                                          if (pct > 0) ...[
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 2),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.shade600,
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Text(
+                                                '-$pct%',
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                  ],
+                                );
+                              }),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
                 const Padding(
                   padding: EdgeInsets.only(right: 12),
                   child: Icon(Icons.chevron_right, color: AppTheme.textSecondary),
@@ -311,7 +423,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
               ],
             ),
           ),
-        );
+        ),
+      );
       },
     );
   }

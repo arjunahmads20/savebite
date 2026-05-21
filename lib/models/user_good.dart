@@ -1,12 +1,15 @@
 class UserGood {
   final int id;
-  final int userId; // owner/giver
+  final int userId;
   final String goodName;
   final String goodCategory;
   final String pictureUrl;
   final DateTime datetimeExpiry;
   final String status;
-  final double goodPrice;
+  final double actualPrice;
+  final double discountedPrice;
+  final bool ownerIsBusiness;
+  final String? ownerBusinessName;
 
   UserGood({
     required this.id,
@@ -16,8 +19,14 @@ class UserGood {
     required this.pictureUrl,
     required this.datetimeExpiry,
     required this.status,
-    required this.goodPrice,
+    required this.actualPrice,
+    required this.discountedPrice,
+    this.ownerIsBusiness = false,
+    this.ownerBusinessName,
   });
+
+  /// Convenience: is this good free to take?
+  bool get isFree => discountedPrice == 0;
 
   factory UserGood.fromJson(Map<String, dynamic> json) {
     String picture = "https://images.unsplash.com/photo-1560806887-1e4cd0b6faa6?auto=format&fit=crop&w=400&q=80";
@@ -39,7 +48,10 @@ class UserGood {
           ? DateTime.parse(json['datetime_expiry'] as String)
           : DateTime.now().add(const Duration(days: 1)),
       status:          json['status'] as String? ?? 'Available',
-      goodPrice:       double.tryParse(json['good_price']?.toString() ?? '0') ?? 0.0,
+      actualPrice:     double.tryParse(json['actual_price']?.toString() ?? '0') ?? 0.0,
+      discountedPrice: double.tryParse(json['discounted_price']?.toString() ?? '0') ?? 0.0,
+      ownerIsBusiness: json['owner_is_business'] as bool? ?? false,
+      ownerBusinessName: json['owner_business_name'] as String?,
     );
   }
 }
@@ -54,7 +66,10 @@ final List<UserGood> dummySharedGoods = [
     pictureUrl: "https://images.unsplash.com/photo-1560806887-1e4cd0b6faa6?auto=format&fit=crop&w=400&q=80",
     datetimeExpiry: DateTime.now().add(const Duration(days: 2)),
     status: "Available",
-    goodPrice: 0.0,
+    actualPrice: 25000,
+    discountedPrice: 0,
+    ownerIsBusiness: false,
+    ownerBusinessName: null,
   ),
   UserGood(
     id: 2,
@@ -64,7 +79,10 @@ final List<UserGood> dummySharedGoods = [
     pictureUrl: "https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?auto=format&fit=crop&w=400&q=80",
     datetimeExpiry: DateTime.now().add(const Duration(hours: 12)),
     status: "Available",
-    goodPrice: 0.0,
+    actualPrice: 35000,
+    discountedPrice: 12000,
+    ownerIsBusiness: true,
+    ownerBusinessName: "Toko Roti Makmur",
   ),
   UserGood(
     id: 3,
@@ -74,6 +92,9 @@ final List<UserGood> dummySharedGoods = [
     pictureUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80",
     datetimeExpiry: DateTime.now().add(const Duration(days: 1)),
     status: "Available",
-    goodPrice: 0.0,
+    actualPrice: 0,
+    discountedPrice: 0,
+    ownerIsBusiness: false,
+    ownerBusinessName: null,
   ),
 ];
