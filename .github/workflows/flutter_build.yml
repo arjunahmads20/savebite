@@ -2,9 +2,9 @@ name: Flutter Build
 
 # This workflow triggers on every push to the 'main' branch
 on:
-  push:
-    branches:
-      - master
+  # push:
+  #   branches:
+  #     - master
   # Also allows you to run this workflow manually from the Actions tab
   workflow_dispatch: 
 
