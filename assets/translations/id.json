@@ -98,5 +98,7 @@
   "phone_number": "Nomor Telepon",
   "password_too_short": "Kata sandi terlalu pendek",
   "sign_up": "Daftar",
-  "already_have_account_login": "Sudah punya akun? Masuk"
+  "already_have_account_login": "Sudah punya akun? Masuk",
+  "actual_price": "Harga Asli",
+  "discounted_price": "Harga Diskon (0 = Gratis)"
 }

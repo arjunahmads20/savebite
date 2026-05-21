@@ -98,5 +98,7 @@
   "phone_number": "Phone Number",
   "password_too_short": "Password too short",
   "sign_up": "Sign Up",
-  "already_have_account_login": "Already have an account? Log In"
+  "already_have_account_login": "Already have an account? Log In",
+  "actual_price": "Actual Price",
+  "discounted_price": "Discounted Price (0 = Free)"
 }

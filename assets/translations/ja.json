@@ -98,5 +98,7 @@
   "phone_number": "電話番号",
   "password_too_short": "パスワードが短すぎます",
   "sign_up": "登録",
-  "already_have_account_login": "すでにアカウントをお持ちですか？ログイン"
+  "already_have_account_login": "すでにアカウントをお持ちですか？ログイン",
+  "actual_price": "元の価格",
+  "discounted_price": "割引価格 (0 = 無料)"
 }
