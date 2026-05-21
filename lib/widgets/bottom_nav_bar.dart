@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_flutter/lucide_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../providers/chat_provider.dart';
@@ -21,7 +21,7 @@ class BottomNavBar extends StatelessWidget {
       onTap: onTap,
       items: [
         BottomNavigationBarItem(
-          icon: const Icon(LucideIcons.home),
+          icon: const Icon(LucideIcons.house),
           label: 'nav_home'.tr(context: context),
         ),
         BottomNavigationBarItem(
