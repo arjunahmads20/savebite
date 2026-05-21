@@ -1,0 +1,77 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run -d chrome
+
+## exception
+
+PathNotFoundException: PathNotFoundException: Cannot open file, path = 'build\flutter_assets\assets/desktop.ini' (OS Error: The system cannot find the file specified, errno = 2)
+
+```
+#0      _File.throwIfError (dart:io/file_impl.dart:779:7)
+#1      _File.openSync (dart:io/file_impl.dart:572:5)
+#2      ForwardingFile.openSync (package:file/src/forwarding/forwarding_file.dart:74:16)
+#3      ErrorHandlingFile.openSync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:277:22)
+#4      _runSync (package:flutter_tools/src/base/error_handling_io.dart:552:14)
+#5      ErrorHandlingFile.openSync (package:flutter_tools/src/base/error_handling_io.dart:276:12)
+#6      ErrorHandlingFile.copySync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:319:29)
+#7      _runSync (package:flutter_tools/src/base/error_handling_io.dart:552:14)
+#8      ErrorHandlingFile.copySync (package:flutter_tools/src/base/error_handling_io.dart:313:5)
+#9      writeBundle.<anonymous closure> (package:flutter_tools/src/bundle_builder.dart:215:19)
+<asynchronous suspension>
+#10     Future.wait.<anonymous closure> (dart:async/future.dart:546:21)
+<asynchronous suspension>
+#11     writeBundle (package:flutter_tools/src/bundle_builder.dart:171:3)
+<asynchronous suspension>
+#12     WebDevFS.update (package:flutter_tools/src/isolated/devfs_web.dart:342:9)
+<asynchronous suspension>
+#13     ResidentWebRunner._updateDevFS (package:flutter_tools/src/isolated/resident_web_runner.dart:801:35)
+<asynchronous suspension>
+#14     ResidentWebRunner.run.<anonymous closure> (package:flutter_tools/src/isolated/resident_web_runner.dart:334:41)
+<asynchronous suspension>
+#15     asyncGuard.<anonymous closure> (package:flutter_tools/src/base/async_guard.dart:108:24)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[32m[✓][39m Flutter (Channel stable, 3.41.6, on Microsoft Windows [Version 10.0.26200.8246], locale en-ID) [220ms]
+    [32m•[39m Flutter version 3.41.6 on channel stable at C:\jun\flutter_windows_3.41.6-stable\flutter
+    [32m•[39m Upstream repository https://github.com/flutter/flutter.git
+    [32m•[39m Framework revision db50e20168 (6 weeks ago), 2026-03-25 16:21:00 -0700
+    [32m•[39m Engine revision 425cfb54d0
+    [32m•[39m Dart version 3.11.4
+    [32m•[39m DevTools version 2.54.2
+    [32m•[39m Feature flags: enable-web, enable-linux-desktop, enable-macos-desktop, enable-windows-desktop, enable-android, enable-ios, cli-animations, enable-native-assets,
+      omit-legacy-version-file, enable-lldb-debugging, enable-uiscene-migration
+
+[32m[✓][39m Windows Version (11 Pro 64-bit, 25H2, 2009) [1,684ms]
+
+[33m[!][39m Android toolchain - develop for Android devices (Android SDK version 33.0.2) [6.4s]
+    [32m•[39m Android SDK at C:\jun\AndroidSDK
+    [32m•[39m Emulator version unknown
+    [31m✗[39m Flutter requires Android SDK 36 and the Android BuildTools 28.0.3
+      To update the Android SDK visit https://flutter.dev/to/windows-android-setup for detailed instructions.
+    [33m![39m Some Android licenses not accepted. To resolve this, run: flutter doctor --android-licenses
+
+[32m[✓][39m Chrome - develop for the web [8ms]
+    [32m•[39m Chrome at C:\Program Files\Google\Chrome\Application\chrome.exe
+
+[31m[✗][39m Visual Studio - develop Windows apps [7ms]
+    [31m✗[39m Visual Studio not installed; this is necessary to develop Windows apps.
+      Download at https://visualstudio.microsoft.com/downloads/.
+      Please install the "Desktop development with C++" workload, including all of its default components
+
+[32m[✓][39m Connected device (3 available) [2.4s]
+    [32m•[39m Windows (desktop) • windows • windows-x64    • Microsoft Windows [Version 10.0.26200.8246]
+    [32m•[39m Chrome (web)      • chrome  • web-javascript • Google Chrome 147.0.7727.138
+    [32m•[39m Edge (web)        • edge    • web-javascript • Microsoft Edge 147.0.3912.86
+
+[32m[✓][39m Network resources [391ms]
+    [32m•[39m All expected network resources are available.
+
+[33m![39m Doctor found issues in 2 categories.
+```

@@ -1,0 +1,2 @@
+1. Get-ChildItem -Path assets -Recurse -Filter desktop.ini -Force | Remove-Item -Force
+2. flutter clean
